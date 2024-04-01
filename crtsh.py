@@ -4,7 +4,7 @@ This is the (unofficial) Python API for crt.sh website.
 Using this code, you can retrieve subdomains.
 """
 
-import requests, json
+import requests, json, time
 
 class crtshAPI(object):
     """crtshAPI main handler."""
@@ -38,7 +38,12 @@ class crtshAPI(object):
         url = base_url.format(domain)
 
         ua = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
-        req = requests.get(url, headers={'User-Agent': ua})
+        while True:
+            try:
+                req = requests.get(url, headers={'User-Agent': ua}, timeout = 60)
+                break
+            except requests.exceptions.RequestException as e:
+                time.sleep(1)
 
         if req.ok:
             try:
